@@ -1,0 +1,3 @@
+import { InjectionToken } from '@angular/core'; import { Observable } from 'rxjs'; import { Category, Product, ProductDraft, ProductUpdate, Variant, VariantUpdate } from '../domain/catalog.models';
+export interface CatalogPort { categories(companyId: string): Observable<Category[]>; createCategory(value: Record<string, unknown>): Observable<Category>; products(companyId: string, text: string): Observable<Product[]>; createProduct(value: ProductDraft): Observable<Product>; updateProduct(id: string, value: ProductUpdate): Observable<Product>; updateVariant(id: string, value: VariantUpdate): Observable<Variant>; uploadImage(id: string, image: File): Observable<string>; }
+export const CATALOG_PORT = new InjectionToken<CatalogPort>('CATALOG_PORT');

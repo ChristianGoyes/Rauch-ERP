@@ -1,0 +1,1 @@
+import { Provider } from '@angular/core'; import { SALES_PORT } from './ports/sales.port'; import { HttpSalesAdapter } from './adapters/http-sales.adapter'; export const salesProviders: Provider[] = [{ provide: SALES_PORT, useClass: HttpSalesAdapter }];

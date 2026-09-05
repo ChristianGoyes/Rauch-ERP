@@ -1,0 +1,1 @@
+import { Provider } from '@angular/core'; import { CATALOG_PORT } from './ports/catalog.port'; import { HttpCatalogAdapter } from './adapters/http-catalog.adapter'; export const catalogProviders: Provider[] = [HttpCatalogAdapter, { provide: CATALOG_PORT, useExisting: HttpCatalogAdapter }];

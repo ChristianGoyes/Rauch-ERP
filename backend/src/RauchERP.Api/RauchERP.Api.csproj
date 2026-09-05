@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <UserSecretsId>RauchERP.Api</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="Microsoft.OpenApi" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks\RauchERP.Infrastructure.Shared\RauchERP.Infrastructure.Shared.csproj" />
+    <ProjectReference Include="..\Modules\Identity\RauchERP.Modules.Identity.Infrastructure\RauchERP.Modules.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Identity\RauchERP.Modules.Identity.Presentation\RauchERP.Modules.Identity.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Organization\RauchERP.Modules.Organization.Infrastructure\RauchERP.Modules.Organization.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Organization\RauchERP.Modules.Organization.Presentation\RauchERP.Modules.Organization.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Catalog\RauchERP.Modules.Catalog.Infrastructure\RauchERP.Modules.Catalog.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Catalog\RauchERP.Modules.Catalog.Presentation\RauchERP.Modules.Catalog.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Inventory\RauchERP.Modules.Inventory.Infrastructure\RauchERP.Modules.Inventory.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Inventory\RauchERP.Modules.Inventory.Presentation\RauchERP.Modules.Inventory.Presentation.csproj" />
+    <ProjectReference Include="..\Modules\Sales\RauchERP.Modules.Sales.Infrastructure\RauchERP.Modules.Sales.Infrastructure.csproj" />
+    <ProjectReference Include="..\Modules\Sales\RauchERP.Modules.Sales.Presentation\RauchERP.Modules.Sales.Presentation.csproj" />
+  </ItemGroup>
+
+</Project>

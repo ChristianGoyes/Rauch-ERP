@@ -1,0 +1,36 @@
+name: rauch-erp
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-rauch_erp}
+      POSTGRES_USER: ${POSTGRES_USER:-rauch}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rauch} -d ${POSTGRES_DB:-rauch_erp}"], interval: 5s, timeout: 5s, retries: 12 }
+    networks: [rauch]
+  backend:
+    build: { context: ., dockerfile: infrastructure/docker/backend.Dockerfile }
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Database: Host=postgres;Port=5432;Database=${POSTGRES_DB:-rauch_erp};Username=${POSTGRES_USER:-rauch};Password=${POSTGRES_PASSWORD:-change-me-local-only}
+      Jwt__Issuer: ${JWT_ISSUER:-RauchERP}
+      Jwt__Audience: ${JWT_AUDIENCE:-RauchERP.Web}
+      Jwt__SigningKey: ${JWT_SIGNING_KEY:-development-only-key-change-at-least-32-chars}
+      Seed__Enabled: "true"
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@rauch.local}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-change-me-local-only}
+      Cors__AllowedOrigins__0: ${FRONTEND_URL:-http://localhost:4200}
+    ports: ["8080:8080"]
+    depends_on: { postgres: { condition: service_healthy } }
+    healthcheck: { test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"], interval: 10s, timeout: 3s, retries: 10 }
+    networks: [rauch]
+  frontend:
+    build: { context: ., dockerfile: infrastructure/docker/frontend.Dockerfile }
+    ports: ["4200:80"]
+    depends_on: { backend: { condition: service_healthy } }
+    networks: [rauch]
+networks: { rauch: { driver: bridge } }
+volumes: { postgres-data: {} }

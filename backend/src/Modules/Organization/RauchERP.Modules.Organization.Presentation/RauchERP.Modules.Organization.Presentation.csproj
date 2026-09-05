@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\RauchERP.Modules.Organization.Application\RauchERP.Modules.Organization.Application.csproj" />
+    <ProjectReference Include="..\RauchERP.Modules.Organization.Contracts\RauchERP.Modules.Organization.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

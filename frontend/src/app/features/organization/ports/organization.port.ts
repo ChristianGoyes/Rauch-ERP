@@ -1,0 +1,3 @@
+import { InjectionToken } from '@angular/core'; import { Observable } from 'rxjs'; import { Branch, Company, CompanyDraft, Warehouse } from '../domain/organization.models';
+export interface OrganizationPort { companies(): Observable<Company[]>; createCompany(value: CompanyDraft): Observable<Company>; branches(companyId: string): Observable<Branch[]>; createBranch(value: Record<string, unknown>): Observable<Branch>; warehouses(branchId: string): Observable<Warehouse[]>; createWarehouse(value: Record<string, unknown>): Observable<Warehouse>; grantCompany(userId: string, companyId: string): Observable<void>; grantBranch(userId: string, branchId: string): Observable<void>; }
+export const ORGANIZATION_PORT = new InjectionToken<OrganizationPort>('ORGANIZATION_PORT');

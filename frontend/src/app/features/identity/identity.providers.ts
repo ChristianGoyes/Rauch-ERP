@@ -1,0 +1,1 @@
+import { Provider } from '@angular/core'; import { USERS_PORT } from './ports/users.port'; import { HttpUsersAdapter } from './adapters/http-users.adapter'; export const identityProviders: Provider[] = [HttpUsersAdapter, { provide: USERS_PORT, useExisting: HttpUsersAdapter }];

@@ -1,0 +1,43 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RauchERP.Application.Abstractions;
+using RauchERP.Modules.Organization.Application;
+using RauchERP.Modules.Organization.Contracts;
+using RauchERP.Modules.Organization.Domain;
+using RauchERP.SharedKernel;
+
+namespace RauchERP.Modules.Organization.Infrastructure;
+
+public sealed class OrganizationDbContext(DbContextOptions<OrganizationDbContext> options) : DbContext(options)
+{
+    public DbSet<Company> Companies => Set<Company>(); public DbSet<Branch> Branches => Set<Branch>(); public DbSet<Warehouse> Warehouses => Set<Warehouse>(); public DbSet<UserCompanyAccess> CompanyAccess => Set<UserCompanyAccess>(); public DbSet<UserBranchAccess> BranchAccess => Set<UserBranchAccess>();
+    protected override void OnModelCreating(ModelBuilder b)
+    {
+        b.HasDefaultSchema("organization");
+        b.Entity<Company>(x => { x.ToTable("companies"); x.HasKey(e => e.Id); x.Property(e => e.LegalName).HasMaxLength(200); x.Property(e => e.TradeName).HasMaxLength(200); x.Property(e => e.TaxIdentification).HasMaxLength(40); x.HasIndex(e => e.TaxIdentification).IsUnique(); x.Property(e => e.Email).HasMaxLength(320); x.Property(e => e.CountryCode).HasMaxLength(2); x.Property(e => e.CurrencyCode).HasMaxLength(3); });
+        b.Entity<Branch>(x => { x.ToTable("branches"); x.HasKey(e => e.Id); x.Property(e => e.Code).HasMaxLength(30); x.Property(e => e.Name).HasMaxLength(160); x.HasIndex(e => new { e.CompanyId, e.Code }).IsUnique(); });
+        b.Entity<Warehouse>(x => { x.ToTable("warehouses"); x.HasKey(e => e.Id); x.Property(e => e.Code).HasMaxLength(30); x.Property(e => e.Name).HasMaxLength(160); x.HasIndex(e => new { e.CompanyId, e.Code }).IsUnique(); });
+        b.Entity<UserCompanyAccess>(x => { x.ToTable("user_company_access"); x.HasKey(e => new { e.UserId, e.CompanyId }); }); b.Entity<UserBranchAccess>(x => { x.ToTable("user_branch_access"); x.HasKey(e => new { e.UserId, e.BranchId }); });
+    }
+}
+
+internal sealed class OrganizationService(OrganizationDbContext db, ICurrentUser currentUser) : IOrganizationService
+{
+    private static DateTimeOffset Now => DateTimeOffset.UtcNow;
+    public async Task<Result<CompanyResponse>> CreateCompanyAsync(CreateCompanyRequest r, CancellationToken ct) { if (await db.Companies.AnyAsync(x => x.TaxIdentification == r.TaxIdentification, ct)) return Result<CompanyResponse>.Failure(new("organization.tax_id_conflict", "Tax identification already exists.")); var x = new Company(r.LegalName, r.TradeName, r.TaxIdentification, r.VerificationDigit, r.Email, r.Phone, r.Address, r.City, r.CountryCode, r.CurrencyCode, r.TimeZoneId, Now); db.Companies.Add(x); if (currentUser.UserId is Guid userId) db.CompanyAccess.Add(new() { UserId = userId, CompanyId = x.Id }); await db.SaveChangesAsync(ct); return Result<CompanyResponse>.Success(new(x.Id, x.LegalName, x.TradeName, x.TaxIdentification, x.IsActive)); }
+    public async Task<IReadOnlyList<CompanyResponse>> GetCompaniesAsync(CancellationToken ct) { if (currentUser.UserId is not Guid userId) return []; return await (from c in db.Companies.AsNoTracking() join a in db.CompanyAccess on c.Id equals a.CompanyId where a.UserId == userId select new CompanyResponse(c.Id, c.LegalName, c.TradeName, c.TaxIdentification, c.IsActive)).ToListAsync(ct); }
+    public async Task<Result<BranchResponse>> CreateBranchAsync(CreateBranchRequest r, CancellationToken ct) { if (!await CanAccessCompany(r.CompanyId, ct)) return Denied<BranchResponse>(); if (await db.Branches.AnyAsync(x => x.CompanyId == r.CompanyId && x.Code == r.Code.ToUpper(), ct)) return Result<BranchResponse>.Failure(new("organization.branch_code_conflict", "Branch code already exists.")); var x = new Branch(r.CompanyId, r.Code, r.Name, r.Address, r.City, r.Phone, Now); db.Branches.Add(x); await db.SaveChangesAsync(ct); return Result<BranchResponse>.Success(new(x.Id, x.CompanyId, x.Code, x.Name, x.IsActive)); }
+    public async Task<IReadOnlyList<BranchResponse>> GetBranchesAsync(Guid companyId, CancellationToken ct) => await CanAccessCompany(companyId, ct) ? await db.Branches.AsNoTracking().Where(x => x.CompanyId == companyId).Select(x => new BranchResponse(x.Id, x.CompanyId, x.Code, x.Name, x.IsActive)).ToListAsync(ct) : [];
+    public async Task<Result<WarehouseResponse>> CreateWarehouseAsync(CreateWarehouseRequest r, CancellationToken ct) { if (!await CanAccessCompany(r.CompanyId, ct)) return Denied<WarehouseResponse>(); if (!await db.Branches.AnyAsync(x => x.Id == r.BranchId && x.CompanyId == r.CompanyId && x.IsActive, ct)) return Result<WarehouseResponse>.Failure(new("organization.branch_invalid", "Branch is missing, inactive, or belongs to another company.")); var x = new Warehouse(r.CompanyId, r.BranchId, r.Code, r.Name, r.IsDefault, Now); db.Warehouses.Add(x); await db.SaveChangesAsync(ct); return Result<WarehouseResponse>.Success(new(x.Id, x.CompanyId, x.BranchId, x.Code, x.Name, x.IsDefault, x.IsActive)); }
+    public async Task<IReadOnlyList<WarehouseResponse>> GetWarehousesAsync(Guid branchId, CancellationToken ct) => await (from w in db.Warehouses.AsNoTracking() join a in db.CompanyAccess on w.CompanyId equals a.CompanyId where w.BranchId == branchId && a.UserId == currentUser.UserId select new WarehouseResponse(w.Id, w.CompanyId, w.BranchId, w.Code, w.Name, w.IsDefault, w.IsActive)).ToListAsync(ct);
+    public async Task<Result> SetBranchActiveAsync(Guid id, bool active, CancellationToken ct) { var x = await db.Branches.FindAsync([id], ct); if (x is null || !await CanAccessCompany(x.CompanyId, ct)) return Result.Failure(new("organization.branch_not_found", "Branch was not found.")); x.SetActive(active, Now); await db.SaveChangesAsync(ct); return Result.Success(); }
+    public async Task<Result> SetWarehouseActiveAsync(Guid id, bool active, CancellationToken ct) { var x = await db.Warehouses.FindAsync([id], ct); if (x is null || !await CanAccessCompany(x.CompanyId, ct)) return Result.Failure(new("organization.warehouse_not_found", "Warehouse was not found.")); x.SetActive(active, Now); await db.SaveChangesAsync(ct); return Result.Success(); }
+    public async Task<Result> AssignCompanyAccessAsync(AssignAccessRequest r, CancellationToken ct) { if (!await CanAccessCompany(r.ResourceId, ct)) return Result.Failure(new("organization.access_denied", "Company access denied.")); if (!await db.CompanyAccess.AnyAsync(x => x.UserId == r.UserId && x.CompanyId == r.ResourceId, ct)) { db.CompanyAccess.Add(new() { UserId = r.UserId, CompanyId = r.ResourceId }); await db.SaveChangesAsync(ct); } return Result.Success(); }
+    public async Task<Result> AssignBranchAccessAsync(AssignAccessRequest r, CancellationToken ct) { var branch = await db.Branches.FindAsync([r.ResourceId], ct); if (branch is null || !await CanAccessCompany(branch.CompanyId, ct)) return Result.Failure(new("organization.access_denied", "Branch access denied.")); if (!await db.BranchAccess.AnyAsync(x => x.UserId == r.UserId && x.BranchId == r.ResourceId, ct)) { db.BranchAccess.Add(new() { UserId = r.UserId, BranchId = r.ResourceId }); await db.SaveChangesAsync(ct); } return Result.Success(); }
+    private Task<bool> CanAccessCompany(Guid id, CancellationToken ct) => currentUser.UserId is Guid userId ? db.CompanyAccess.AnyAsync(x => x.UserId == userId && x.CompanyId == id, ct) : Task.FromResult(false);
+    private static Result<T> Denied<T>() => Result<T>.Failure(new("organization.access_denied", "Company access denied."));
+}
+internal sealed class WarehouseInventoryView(OrganizationDbContext db) : IWarehouseInventoryView { public Task<WarehouseInventoryInfo?> GetAsync(Guid id, CancellationToken ct) => db.Warehouses.AsNoTracking().Where(x => x.Id == id).Select(x => new WarehouseInventoryInfo(x.Id, x.CompanyId, x.BranchId, x.IsActive)).SingleOrDefaultAsync(ct); }
+internal sealed class OrganizationAccessView(OrganizationDbContext db) : IOrganizationAccessView { public async Task<bool> HasAccessAsync(Guid userId, Guid companyId, Guid branchId, CancellationToken ct) => await db.CompanyAccess.AnyAsync(x => x.UserId == userId && x.CompanyId == companyId, ct) && await db.BranchAccess.AnyAsync(x => x.UserId == userId && x.BranchId == branchId, ct); }
+public static class OrganizationModule { public static IServiceCollection AddOrganizationModule(this IServiceCollection s, IConfiguration c) { s.AddDbContext<OrganizationDbContext>(o => o.UseNpgsql(c.GetConnectionString("Database"))); s.AddScoped<IOrganizationService, OrganizationService>(); s.AddScoped<IWarehouseInventoryView, WarehouseInventoryView>(); s.AddScoped<IOrganizationAccessView, OrganizationAccessView>(); return s; } }

@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+</PropertyGroup>
+  <ItemGroup><ProjectReference Include="..\RauchERP.Modules.Sales.Contracts\RauchERP.Modules.Sales.Contracts.csproj" /><ProjectReference Include="..\RauchERP.Modules.Sales.Domain\RauchERP.Modules.Sales.Domain.csproj" /><ProjectReference Include="..\..\Inventory\RauchERP.Modules.Inventory.Contracts\RauchERP.Modules.Inventory.Contracts.csproj" /><ProjectReference Include="..\..\Catalog\RauchERP.Modules.Catalog.Contracts\RauchERP.Modules.Catalog.Contracts.csproj" /><ProjectReference Include="..\..\Organization\RauchERP.Modules.Organization.Contracts\RauchERP.Modules.Organization.Contracts.csproj" /><ProjectReference Include="..\..\..\BuildingBlocks\RauchERP.Application.Abstractions\RauchERP.Application.Abstractions.csproj" /></ItemGroup>
+
+</Project>

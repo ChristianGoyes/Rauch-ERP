@@ -1,0 +1,2 @@
+import { computed, Injectable, signal } from '@angular/core';
+@Injectable({ providedIn: 'root' }) export class LoadingStore { private readonly count = signal(0); readonly message = signal('Cargando información…'); readonly busy = computed(() => this.count() > 0); begin(message: string): void { this.message.set(message); this.count.update(x => x + 1); } end(): void { this.count.update(x => Math.max(0, x - 1)); } }

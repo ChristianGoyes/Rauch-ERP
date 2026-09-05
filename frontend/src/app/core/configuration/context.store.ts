@@ -1,0 +1,2 @@
+import { Injectable, signal } from '@angular/core';
+@Injectable({ providedIn: 'root' }) export class ContextStore { readonly companyId = signal(sessionStorage.getItem('rauch.companyId') ?? ''); readonly branchId = signal(sessionStorage.getItem('rauch.branchId') ?? ''); selectCompany(id: string): void { this.companyId.set(id); sessionStorage.setItem('rauch.companyId', id); this.selectBranch(''); } selectBranch(id: string): void { this.branchId.set(id); if (id) sessionStorage.setItem('rauch.branchId', id); else sessionStorage.removeItem('rauch.branchId'); } }

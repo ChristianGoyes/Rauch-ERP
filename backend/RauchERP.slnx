@@ -1,0 +1,53 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RauchERP.Api/RauchERP.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/RauchERP.Application.Abstractions/RauchERP.Application.Abstractions.csproj" />
+    <Project Path="src/BuildingBlocks/RauchERP.Contracts/RauchERP.Contracts.csproj" />
+    <Project Path="src/BuildingBlocks/RauchERP.Infrastructure.Shared/RauchERP.Infrastructure.Shared.csproj" />
+    <Project Path="src/BuildingBlocks/RauchERP.SharedKernel/RauchERP.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Catalog/">
+    <Project Path="src/Modules/Catalog/RauchERP.Modules.Catalog.Application/RauchERP.Modules.Catalog.Application.csproj" />
+    <Project Path="src/Modules/Catalog/RauchERP.Modules.Catalog.Contracts/RauchERP.Modules.Catalog.Contracts.csproj" />
+    <Project Path="src/Modules/Catalog/RauchERP.Modules.Catalog.Domain/RauchERP.Modules.Catalog.Domain.csproj" />
+    <Project Path="src/Modules/Catalog/RauchERP.Modules.Catalog.Infrastructure/RauchERP.Modules.Catalog.Infrastructure.csproj" />
+    <Project Path="src/Modules/Catalog/RauchERP.Modules.Catalog.Presentation/RauchERP.Modules.Catalog.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Identity/">
+    <Project Path="src/Modules/Identity/RauchERP.Modules.Identity.Application/RauchERP.Modules.Identity.Application.csproj" />
+    <Project Path="src/Modules/Identity/RauchERP.Modules.Identity.Contracts/RauchERP.Modules.Identity.Contracts.csproj" />
+    <Project Path="src/Modules/Identity/RauchERP.Modules.Identity.Domain/RauchERP.Modules.Identity.Domain.csproj" />
+    <Project Path="src/Modules/Identity/RauchERP.Modules.Identity.Infrastructure/RauchERP.Modules.Identity.Infrastructure.csproj" />
+    <Project Path="src/Modules/Identity/RauchERP.Modules.Identity.Presentation/RauchERP.Modules.Identity.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Inventory/">
+    <Project Path="src/Modules/Inventory/RauchERP.Modules.Inventory.Application/RauchERP.Modules.Inventory.Application.csproj" />
+    <Project Path="src/Modules/Inventory/RauchERP.Modules.Inventory.Contracts/RauchERP.Modules.Inventory.Contracts.csproj" />
+    <Project Path="src/Modules/Inventory/RauchERP.Modules.Inventory.Domain/RauchERP.Modules.Inventory.Domain.csproj" />
+    <Project Path="src/Modules/Inventory/RauchERP.Modules.Inventory.Infrastructure/RauchERP.Modules.Inventory.Infrastructure.csproj" />
+    <Project Path="src/Modules/Inventory/RauchERP.Modules.Inventory.Presentation/RauchERP.Modules.Inventory.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Organization/">
+    <Project Path="src/Modules/Organization/RauchERP.Modules.Organization.Application/RauchERP.Modules.Organization.Application.csproj" />
+    <Project Path="src/Modules/Organization/RauchERP.Modules.Organization.Contracts/RauchERP.Modules.Organization.Contracts.csproj" />
+    <Project Path="src/Modules/Organization/RauchERP.Modules.Organization.Domain/RauchERP.Modules.Organization.Domain.csproj" />
+    <Project Path="src/Modules/Organization/RauchERP.Modules.Organization.Infrastructure/RauchERP.Modules.Organization.Infrastructure.csproj" />
+    <Project Path="src/Modules/Organization/RauchERP.Modules.Organization.Presentation/RauchERP.Modules.Organization.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Sales/">
+    <Project Path="src/Modules/Sales/RauchERP.Modules.Sales.Application/RauchERP.Modules.Sales.Application.csproj" />
+    <Project Path="src/Modules/Sales/RauchERP.Modules.Sales.Contracts/RauchERP.Modules.Sales.Contracts.csproj" />
+    <Project Path="src/Modules/Sales/RauchERP.Modules.Sales.Domain/RauchERP.Modules.Sales.Domain.csproj" />
+    <Project Path="src/Modules/Sales/RauchERP.Modules.Sales.Infrastructure/RauchERP.Modules.Sales.Infrastructure.csproj" />
+    <Project Path="src/Modules/Sales/RauchERP.Modules.Sales.Presentation/RauchERP.Modules.Sales.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RauchERP.ArchitectureTests/RauchERP.ArchitectureTests.csproj" />
+    <Project Path="tests/RauchERP.FunctionalTests/RauchERP.FunctionalTests.csproj" />
+    <Project Path="tests/RauchERP.IntegrationTests/RauchERP.IntegrationTests.csproj" />
+    <Project Path="tests/RauchERP.UnitTests/RauchERP.UnitTests.csproj" />
+  </Folder>
+</Solution>

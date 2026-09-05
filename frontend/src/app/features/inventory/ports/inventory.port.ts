@@ -1,0 +1,3 @@
+import { InjectionToken } from '@angular/core'; import { Observable } from 'rxjs'; import { AdjustmentDraft, InventoryItem, Purchase, PurchaseDraft, StockMovement } from '../domain/inventory.models';
+export interface InventoryPort { items(warehouseId: string): Observable<InventoryItem[]>; kardex(warehouseId: string): Observable<StockMovement[]>; purchases(warehouseId: string): Observable<Purchase[]>; registerPurchase(value: PurchaseDraft): Observable<Purchase>; initial(value: AdjustmentDraft): Observable<StockMovement>; positive(value: AdjustmentDraft): Observable<StockMovement>; negative(value: AdjustmentDraft): Observable<StockMovement>; }
+export const INVENTORY_PORT = new InjectionToken<InventoryPort>('INVENTORY_PORT');

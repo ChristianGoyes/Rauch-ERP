@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/TestResults/
+**/coverage/
+frontend/node_modules/
+frontend/dist/
+frontend/playwright-report/
+backend/src/RauchERP.Api/wwwroot/uploads/**
+.env
+.idea/
+.vs/
+.vscode/
+*.user
+*.suo

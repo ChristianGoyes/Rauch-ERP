@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RauchERP.Modules.Identity.Domain\RauchERP.Modules.Identity.Domain.csproj" />
+    <ProjectReference Include="..\RauchERP.Modules.Identity.Contracts\RauchERP.Modules.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\RauchERP.Application.Abstractions\RauchERP.Application.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup><PackageReference Include="FluentValidation" /></ItemGroup>
+
+</Project>

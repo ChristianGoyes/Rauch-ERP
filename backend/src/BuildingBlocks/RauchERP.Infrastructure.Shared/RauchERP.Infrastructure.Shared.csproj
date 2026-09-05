@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\RauchERP.Application.Abstractions\RauchERP.Application.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

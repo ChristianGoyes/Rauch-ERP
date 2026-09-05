@@ -1,0 +1,1 @@
+import { InjectionToken } from '@angular/core'; import { Observable } from 'rxjs'; import { User, UserDraft } from '../domain/user'; export interface UsersPort { list(): Observable<User[]>; create(value: UserDraft): Observable<User>; } export const USERS_PORT = new InjectionToken<UsersPort>('USERS_PORT');

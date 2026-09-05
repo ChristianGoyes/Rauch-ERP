@@ -1,0 +1,3 @@
+import { Component } from '@angular/core'; import { RouterLink } from '@angular/router'; import { MatButtonModule } from '@angular/material/button';
+@Component({ standalone: true, imports: [RouterLink, MatButtonModule], template: `<main class="center"><h1>Acceso denegado</h1><p>No tienes el permiso necesario para esta operación.</p><a mat-flat-button routerLink="/">Volver</a></main>` }) export class AccessDeniedPage {}
+@Component({ standalone: true, imports: [RouterLink, MatButtonModule], template: `<main class="center"><h1>Página no encontrada</h1><a mat-flat-button routerLink="/">Volver al inicio</a></main>` }) export class NotFoundPage {}

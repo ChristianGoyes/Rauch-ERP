@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Testcontainers.PostgreSql" />
+    <ProjectReference Include="..\..\src\Modules\Catalog\RauchERP.Modules.Catalog.Infrastructure\RauchERP.Modules.Catalog.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Organization\RauchERP.Modules.Organization.Infrastructure\RauchERP.Modules.Organization.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Inventory\RauchERP.Modules.Inventory.Infrastructure\RauchERP.Modules.Inventory.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

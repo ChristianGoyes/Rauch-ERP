@@ -1,0 +1,1 @@
+import { Provider } from '@angular/core'; import { INVENTORY_PORT } from './ports/inventory.port'; import { HttpInventoryAdapter } from './adapters/http-inventory.adapter'; export const inventoryProviders: Provider[] = [HttpInventoryAdapter, { provide: INVENTORY_PORT, useExisting: HttpInventoryAdapter }];

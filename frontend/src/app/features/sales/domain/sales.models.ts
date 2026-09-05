@@ -1,0 +1,5 @@
+export interface SaleLineDraft { productVariantId: string; quantity: number; unitPrice: number; }
+export interface SaleDraft { companyId: string; branchId: string; warehouseId: string; customerIdentification: string; customerName: string; customerEmail: string; isFinalConsumer: boolean; paymentMethod: string; lines: SaleLineDraft[]; }
+export interface SaleLine { readonly productVariantId: string; readonly productName: string; readonly sku: string; readonly quantity: number; readonly unitPrice: number; readonly lineTotal: number; }
+export interface Sale { readonly id: string; readonly warehouseId: string; readonly number: string; readonly customerIdentification?: string; readonly customerName?: string; readonly customerEmail?: string; readonly isFinalConsumer: boolean; readonly paymentMethod: string; readonly status: string; readonly total: number; readonly createdAt: string; readonly createdBy: string; readonly lines: SaleLine[]; }
+export interface DashboardSummary { readonly todaySales: number; readonly todayTransactions: number; readonly inventoryCost: number; readonly lowStockProducts: number; readonly recentSales: Sale[]; }
