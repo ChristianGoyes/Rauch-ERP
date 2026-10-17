@@ -17,12 +17,12 @@ public static class OrganizationEndpoints
         var branches = app.MapGroup("/api/v1/branches").WithTags("Branches").RequireAuthorization();
         branches.MapPost("/", async (CreateBranchRequest r, IOrganizationService s, CancellationToken ct) => Http(await s.CreateBranchAsync(r, ct))).RequireAuthorization("organization.branches.create");
         branches.MapGet("/", async (Guid companyId, IOrganizationService s, CancellationToken ct) => Results.Ok(await s.GetBranchesAsync(companyId, ct))).RequireAuthorization("organization.branches.read");
-        branches.MapPut("/{id:guid}/active", async (Guid id, bool active, IOrganizationService s, CancellationToken ct) => Http(await s.SetBranchActiveAsync(id, active, ct)));
+        branches.MapPut("/{id:guid}/active", async (Guid id, bool active, IOrganizationService s, CancellationToken ct) => Http(await s.SetBranchActiveAsync(id, active, ct))).RequireAuthorization("organization.branches.update");
         branches.MapPost("/access", async (AssignAccessRequest r, IOrganizationService s, CancellationToken ct) => Http(await s.AssignBranchAccessAsync(r, ct))).RequireAuthorization("identity.users.update");
         var warehouses = app.MapGroup("/api/v1/warehouses").WithTags("Warehouses").RequireAuthorization();
-        warehouses.MapPost("/", async (CreateWarehouseRequest r, IOrganizationService s, CancellationToken ct) => Http(await s.CreateWarehouseAsync(r, ct)));
-        warehouses.MapGet("/", async (Guid branchId, IOrganizationService s, CancellationToken ct) => Results.Ok(await s.GetWarehousesAsync(branchId, ct)));
-        warehouses.MapPut("/{id:guid}/active", async (Guid id, bool active, IOrganizationService s, CancellationToken ct) => Http(await s.SetWarehouseActiveAsync(id, active, ct)));
+        warehouses.MapPost("/", async (CreateWarehouseRequest r, IOrganizationService s, CancellationToken ct) => Http(await s.CreateWarehouseAsync(r, ct))).RequireAuthorization("organization.warehouses.create");
+        warehouses.MapGet("/", async (Guid branchId, IOrganizationService s, CancellationToken ct) => Results.Ok(await s.GetWarehousesAsync(branchId, ct))).RequireAuthorization("organization.warehouses.read");
+        warehouses.MapPut("/{id:guid}/active", async (Guid id, bool active, IOrganizationService s, CancellationToken ct) => Http(await s.SetWarehouseActiveAsync(id, active, ct))).RequireAuthorization("organization.warehouses.update");
         return app;
     }
     private static IResult Http(Result r) => r.IsSuccess ? Results.NoContent() : Results.Problem(r.Error.Description, statusCode: 400, title: r.Error.Code);

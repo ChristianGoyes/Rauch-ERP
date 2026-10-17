@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { OrganizationFacade } from '../../features/organization/application/organization.facade';
+import { AuthFacade } from '../authentication/application/auth.facade';
 import { SalesFacade } from '../../features/sales/application/sales.facade';
 import { ContextStore } from '../configuration/context.store';
 
@@ -14,7 +15,7 @@ import { ContextStore } from '../configuration/context.store';
   template: `
     <header class="page-header">
       <div class="page-heading"><h1>Resumen general</h1><p>Un vistazo rápido al estado del negocio y del inventario seleccionado.</p></div>
-      <div class="page-actions dashboard-actions"><a class="primary-action" mat-flat-button routerLink="/sales"><mat-icon>add</mat-icon>Nueva venta</a><a mat-stroked-button routerLink="/catalog"><mat-icon>inventory_2</mat-icon>Agregar producto</a></div>
+      <div class="page-actions dashboard-actions">@if (auth.has('sales.create')) { <a class="primary-action" mat-flat-button routerLink="/sales"><mat-icon>add</mat-icon>Nueva venta</a> } @if (auth.has('catalog.products.create')) { <a mat-stroked-button routerLink="/catalog"><mat-icon>inventory_2</mat-icon>Agregar producto</a> }</div>
     </header>
     @if (sales.summary(); as summary) {
       <section class="metric-grid" aria-label="Indicadores principales">
@@ -33,6 +34,7 @@ import { ContextStore } from '../configuration/context.store';
 })
 export class DashboardPage {
   readonly sales = inject(SalesFacade);
+  readonly auth = inject(AuthFacade);
   private readonly organization = inject(OrganizationFacade);
   private readonly context = inject(ContextStore);
   constructor() { effect(() => { const warehouse = this.organization.warehouses()[0]; if (warehouse) this.sales.loadSummary(warehouse.id); }); this.organization.loadWarehouses(this.context.branchId()); }

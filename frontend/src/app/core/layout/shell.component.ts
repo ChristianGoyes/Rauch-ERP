@@ -31,8 +31,8 @@ import { LoadingStore } from '../http/loading.store';
             <a mat-button routerLink="/sales" routerLinkActive="active-nav" (click)="closeOnMobile(drawer)"><mat-icon>point_of_sale</mat-icon>Ventas</a>
             <a mat-button routerLink="/catalog" routerLinkActive="active-nav" (click)="closeOnMobile(drawer)"><mat-icon>auto_stories</mat-icon>Catálogo</a>
             <a mat-button routerLink="/inventory" routerLinkActive="active-nav" (click)="closeOnMobile(drawer)"><mat-icon>inventory_2</mat-icon>Inventario</a>
-            @if (auth.has('organization.companies.read') || auth.has('identity.users.read')) { <small class="nav-section">CONFIGURACIÓN</small> }
-            @if (auth.has('organization.companies.read')) { <a mat-button routerLink="/organization" routerLinkActive="active-nav" (click)="closeOnMobile(drawer)"><mat-icon>corporate_fare</mat-icon>Organización</a> }
+            @if (auth.has('organization.companies.create') || auth.has('identity.users.read')) { <small class="nav-section">CONFIGURACIÓN</small> }
+            @if (auth.has('organization.companies.create')) { <a mat-button routerLink="/organization" routerLinkActive="active-nav" (click)="closeOnMobile(drawer)"><mat-icon>corporate_fare</mat-icon>Organización</a> }
             @if (auth.has('identity.users.read')) { <a mat-button routerLink="/users" routerLinkActive="active-nav" (click)="closeOnMobile(drawer)"><mat-icon>group</mat-icon>Usuarios</a> }
           </nav>
           <div class="sidebar-footer"><button mat-button type="button" (click)="auth.logout()"><mat-icon>logout</mat-icon>Cerrar sesión</button></div>
@@ -79,6 +79,6 @@ export class ShellComponent implements OnInit {
   companyChanged(id: string): void { this.context.selectCompany(id); this.organization.loadBranches(id); }
   branchChanged(id: string): void { this.context.selectBranch(id); this.organization.loadWarehouses(id); }
   closeOnMobile(drawer: MatSidenav): void { if (this.isMobile()) void drawer.close(); }
-  profileRole(): string { return this.auth.has('identity.users.read') ? 'Administrador' : 'Usuario'; }
+  profileRole(): string { if (this.auth.has('identity.users.read')) return 'Administrador'; if (this.auth.has('sales.create')) return 'Ventas'; if (this.auth.has('inventory.purchases.read')) return 'Contador'; return 'Usuario'; }
   initials(): string { const words = (this.auth.session()?.displayName || 'Rauch Usuario').trim().split(/\s+/); return words.slice(0, 2).map(word => word[0]?.toUpperCase()).join(''); }
 }

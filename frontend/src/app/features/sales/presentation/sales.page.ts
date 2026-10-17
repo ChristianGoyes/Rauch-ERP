@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { AuthFacade } from '../../../core/authentication/application/auth.facade';
 import { ContextStore } from '../../../core/configuration/context.store';
 import { InventoryFacade } from '../../inventory/application/inventory.facade';
 import { OrganizationFacade } from '../../organization/application/organization.facade';
@@ -23,7 +24,7 @@ const FINAL_CONSUMER = { identification: '222222222222', name: 'Consumidor final
   template: `
     <header class="page-header"><div class="page-heading"><h1>Ventas</h1><p>Selecciona productos, identifica al cliente y confirma la salida de inventario.</p></div><mat-form-field class="warehouse-field" appearance="outline"><mat-label>Bodega</mat-label><mat-icon matPrefix>warehouse</mat-icon><mat-select [formControl]="warehouse">@for (item of organization.warehouses(); track item.id) { <mat-option [value]="item.id">{{ item.name }}</mat-option> }</mat-select></mat-form-field></header>
     <mat-tab-group>
-      <mat-tab label="Nueva venta">
+      @if (auth.has('sales.create')) { <mat-tab label="Nueva venta">
         <div class="pos-layout">
           <div class="pos-column">
             <mat-card class="client-card"><mat-card-title>Cliente y forma de pago</mat-card-title><form [formGroup]="form">
@@ -41,12 +42,12 @@ const FINAL_CONSUMER = { identification: '222222222222', name: 'Consumidor final
             <div class="ticket-total"><span>Total</span><strong>{{ total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></div><button class="checkout-button" mat-flat-button [disabled]="cart().length === 0 || form.invalid || !warehouse.value" (click)="checkout()">Finalizar venta <mat-icon>arrow_forward</mat-icon></button>
           </mat-card>
         </div>
-      </mat-tab>
+      </mat-tab> }
       <mat-tab label="Historial">@for (sale of sales.sales(); track sale.id) { <mat-card class="history-card"><div class="table-row"><strong>{{ sale.number }}</strong><span>{{ sale.createdAt | date:'short' }}</span><span>{{ sale.customerIdentification || 'Sin identificación histórica' }} · {{ sale.customerName || 'Consumidor final' }}</span><span>{{ sale.customerEmail || 'Sin correo histórico' }}</span><span>{{ sale.paymentMethod }}</span><strong>{{ sale.total | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></div>@for (line of sale.lines; track line.productVariantId) { <small>{{ line.productName }} · {{ line.quantity }} unidades</small> }</mat-card> } @empty { <div class="empty-state">No hay ventas guardadas.</div> }</mat-tab>
     </mat-tab-group>`
 })
 export class SalesPage {
-  readonly context = inject(ContextStore); readonly organization = inject(OrganizationFacade); readonly inventory = inject(InventoryFacade); readonly sales = inject(SalesFacade); private readonly fb = inject(FormBuilder);
+  readonly context = inject(ContextStore); readonly organization = inject(OrganizationFacade); readonly inventory = inject(InventoryFacade); readonly sales = inject(SalesFacade); readonly auth = inject(AuthFacade); private readonly fb = inject(FormBuilder);
   readonly cart = signal<SaleLineDraft[]>([]); readonly warehouse = this.fb.nonNullable.control('', Validators.required);
   readonly form = this.fb.nonNullable.group({ customerIdentification: ['', Validators.required], customerName: ['', Validators.required], customerEmail: ['', [Validators.required, Validators.email]], isFinalConsumer: false, paymentMethod: 'Efectivo', productVariantId: ['', Validators.required], quantity: [1, [Validators.required, Validators.min(.0001)]], unitPrice: [0, [Validators.required, Validators.min(0)]] });
   constructor() { effect(() => { const warehouses = this.organization.warehouses(); if (!this.warehouse.value && warehouses.length) this.warehouse.setValue(warehouses[0].id); }); this.warehouse.valueChanges.subscribe(id => { this.inventory.load(id); this.sales.load(id); }); this.organization.loadWarehouses(this.context.branchId()); this.toggleFinalConsumer(true); }

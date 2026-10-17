@@ -17,7 +17,7 @@ public static class IdentityEndpoints
         auth.MapPost("/logout", async (LogoutRequest r, IIdentityService s, CancellationToken ct) => ToHttp(await s.LogoutAsync(r, ct))).RequireAuthorization();
         var users = app.MapGroup("/api/v1/users").WithTags("Users").RequireAuthorization();
         users.MapPost("/", async (CreateUserRequest r, IIdentityService s, CancellationToken ct) => ToHttp(await s.CreateUserAsync(r, ct))).RequireAuthorization("identity.users.create");
-        users.MapGet("/", async (int page, int pageSize, IIdentityService s, CancellationToken ct) => Results.Ok(await s.GetUsersAsync(page, pageSize, ct))).RequireAuthorization("identity.users.read");
+        users.MapGet("/", async (int? page, int? pageSize, IIdentityService s, CancellationToken ct) => Results.Ok(await s.GetUsersAsync(page ?? 1, pageSize ?? 50, ct))).RequireAuthorization("identity.users.read");
         users.MapGet("/{id:guid}", async (Guid id, IIdentityService s, CancellationToken ct) => await s.GetUserAsync(id, ct) is { } user ? Results.Ok(user) : Results.NotFound()).RequireAuthorization("identity.users.read");
         users.MapPut("/{id:guid}/active", async (Guid id, bool active, IIdentityService s, CancellationToken ct) => ToHttp(await s.SetUserActiveAsync(id, active, ct))).RequireAuthorization("identity.users.update");
         users.MapPut("/{id:guid}/roles", async (Guid id, AssignIdsRequest r, IIdentityService s, CancellationToken ct) => ToHttp(await s.AssignRolesAsync(id, r.Ids, ct))).RequireAuthorization("identity.users.update");

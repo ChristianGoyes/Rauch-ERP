@@ -21,8 +21,8 @@ internal static class DevelopmentDatabase
         var roleDefinitions = new Dictionary<string, string[]>
         {
             [SystemRoles.Administrator] = Permissions.All,
-            [SystemRoles.Sales] = ["catalog.categories.read", "catalog.products.read", "inventory.stock.read", "inventory.movements.read", "sales.read", "sales.create", "dashboard.read"],
-            [SystemRoles.Accountant] = ["catalog.categories.read", "catalog.products.read", "inventory.stock.read", "inventory.movements.read", "inventory.purchases.read", "sales.read", "dashboard.read"]
+            [SystemRoles.Sales] = ["organization.companies.read", "organization.branches.read", "organization.warehouses.read", "catalog.brands.read", "catalog.categories.read", "catalog.products.read", "inventory.stock.read", "inventory.movements.read", "sales.read", "sales.create", "dashboard.read"],
+            [SystemRoles.Accountant] = ["organization.companies.read", "organization.branches.read", "organization.warehouses.read", "catalog.brands.read", "catalog.categories.read", "catalog.products.read", "inventory.stock.read", "inventory.movements.read", "inventory.purchases.read", "sales.read", "dashboard.read"]
         };
         var rolesByName = new Dictionary<string, Role>();
         foreach (var definition in roleDefinitions)

@@ -54,7 +54,7 @@ export class ProductEditDialog {
   template: `
     <header class="page-header">
       <div class="page-heading"><h1>Catálogo de productos</h1><p>Gestiona productos, precios, imágenes y existencias iniciales.</p></div>
-      <div class="catalog-toolbar"><mat-form-field class="catalog-search" appearance="outline"><mat-label>Buscar nombre, SKU o código</mat-label><mat-icon matPrefix>search</mat-icon><input matInput #search (keyup)="facade.search(context.companyId(), search.value)"></mat-form-field><button class="primary-action" mat-flat-button type="button" (click)="selectedTab.set(1)"><mat-icon>add</mat-icon>Añadir producto</button></div>
+      <div class="catalog-toolbar"><mat-form-field class="catalog-search" appearance="outline"><mat-label>Buscar nombre, SKU o código</mat-label><mat-icon matPrefix>search</mat-icon><input matInput #search (keyup)="facade.search(context.companyId(), search.value)"></mat-form-field>@if (auth.has('catalog.products.create')) { <button class="primary-action" mat-flat-button type="button" (click)="selectedTab.set(1)"><mat-icon>add</mat-icon>Añadir producto</button> }</div>
     </header>
     <mat-tab-group [selectedIndex]="selectedTab()" (selectedIndexChange)="selectedTab.set($event)">
       <mat-tab label="Productos">
@@ -67,7 +67,7 @@ export class ProductEditDialog {
           }
         } @empty { <div class="empty-state">No hay productos para este filtro.</div> }</div>
       </mat-tab>
-      <mat-tab label="Nuevo producto">
+      @if (auth.has('catalog.products.create')) { <mat-tab label="Nuevo producto">
         <mat-card class="form-card"><form [formGroup]="productForm" (ngSubmit)="createProduct()">
           <div class="form-row"><mat-form-field><mat-label>Nombre</mat-label><input matInput formControlName="name"></mat-form-field><mat-form-field><mat-label>Categoría</mat-label><mat-select formControlName="categoryId">@for (category of facade.categories(); track category.id) { <mat-option [value]="category.id">{{ category.name }}</mat-option> }</mat-select></mat-form-field></div>
           <mat-form-field><mat-label>Descripción</mat-label><textarea matInput formControlName="description"></textarea></mat-form-field><mat-checkbox formControlName="tracksInventory">Controla inventario</mat-checkbox>
@@ -79,8 +79,8 @@ export class ProductEditDialog {
           <label>Imagen del producto <input type="file" accept="image/png,image/jpeg,image/webp" (change)="newImage=$any($event.target).files[0]"></label>
           <button mat-flat-button type="submit" [disabled]="productForm.invalid || !context.companyId() || !warehouseId()">Guardar producto</button>
         </form></mat-card>
-      </mat-tab>
-      <mat-tab label="Categorías"><mat-card class="form-card"><form [formGroup]="categoryForm" (ngSubmit)="createCategory()"><mat-form-field><mat-label>Nombre</mat-label><input matInput formControlName="name"></mat-form-field><mat-form-field><mat-label>Descripción</mat-label><input matInput formControlName="description"></mat-form-field><button mat-flat-button type="submit" [disabled]="categoryForm.invalid || !context.companyId()">Crear categoría</button></form>@for (category of facade.categories(); track category.id) { <div class="table-row"><strong>{{ category.name }}</strong><span class="muted">{{ category.description || 'Sin descripción' }}</span></div> }</mat-card></mat-tab>
+      </mat-tab> }
+      <mat-tab label="Categorías"><mat-card class="form-card">@if (auth.has('catalog.categories.create')) { <form [formGroup]="categoryForm" (ngSubmit)="createCategory()"><mat-form-field><mat-label>Nombre</mat-label><input matInput formControlName="name"></mat-form-field><mat-form-field><mat-label>Descripción</mat-label><input matInput formControlName="description"></mat-form-field><button mat-flat-button type="submit" [disabled]="categoryForm.invalid || !context.companyId()">Crear categoría</button></form> } @for (category of facade.categories(); track category.id) { <div class="table-row"><strong>{{ category.name }}</strong><span class="muted">{{ category.description || 'Sin descripción' }}</span></div> }</mat-card></mat-tab>
     </mat-tab-group>`
 })
 export class CatalogPage implements OnInit {

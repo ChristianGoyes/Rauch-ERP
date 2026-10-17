@@ -4,8 +4,10 @@
 - [Módulos](modules/index.md)
 - [Base de datos](database/index.md)
 - [API](api/index.md)
+- [Despliegue](deployment.md)
 - [Decisiones](decisions/index.md)
 - [Recomendaciones y próximos pasos](roadmap.md)
+- [Reportes de calidad](../reports/README.md)
 
 ## Ejecución local
 

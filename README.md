@@ -6,6 +6,8 @@ Base de producto para un ERP de retail especializado, implementada como monolito
 
 La aplicación cubre Identity, Organization, Catalog, Inventory, compras y Sales. Incluye perfiles Administrador, Ventas y Contador; imágenes de producto; compras que actualizan stock/costos; ventas que descuentan inventario; kardex e indicadores generales. El backend usa .NET 10, ASP.NET Core, EF Core y PostgreSQL; el frontend usa Angular con componentes standalone, signals, formularios reactivos y adaptadores HTTP.
 
+> **Entorno actual:** la base local `rauch_erp` en `localhost:5432` está clasificada exclusivamente como QA/pruebas. Contiene usuarios y transacciones de prueba y no debe reutilizarse como base de producción.
+
 ## Inicio rápido
 
 1. Copie `.env.example` a `.env` y cambie los valores locales.
@@ -23,3 +25,5 @@ npm start
 ```
 
 Consulte [docs/index.md](docs/index.md) para arquitectura, migraciones, seeds y pruebas.
+
+Los resultados de validación y plantillas de seguimiento se conservan en [reports/README.md](reports/README.md).
